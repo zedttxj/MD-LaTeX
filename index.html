@@ -41,7 +41,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/latex.js@0.11.1/dist/latex.min.js"></script>
   <script>
     function showPanel(panelId, clickedBtn) {
       // Hide all panels
@@ -229,7 +228,7 @@
     <h2>📄 LaTeX.js Rendered Preview</h2>
     <h3>🧾 LaTeX Body Only</h3>
     <textarea id="bodyLatexInput">\section{Introduction}\nThis was inserted into the template.</textarea>
-    <button id="previewTemplateBtn">📄 Render Template with Body</button>
+    <button onclick="compileWithTectonic()">Compile to PDF (Tectonic)</button>
     <h3>📄 LaTeX Template</h3>
     <textarea id="latexTemplateInput">\documentclass{article}
     \usepackage{amsmath}
@@ -248,7 +247,6 @@
     
     \end{document}
     </textarea>
-    <div id="latexjsPreview" style="border: 1px solid #ccc; padding: 10px; background: #f9f9f9;"></div>
   </div>
 
 
@@ -292,32 +290,29 @@
     // Initial render
     updatePreview();
 
-    document.getElementById("previewTemplateBtn").onclick = () => {
-      const template = document.getElementById("latexTemplateInput").value;
-      const body = document.getElementById("bodyLatexInput").value;
-    
-      if (!template.includes("%INSERT_BODY%")) {
-        alert("❌ Your template must include the placeholder %INSERT_BODY%");
-        return;
-      }
+    import init, { Tectonic } from "https://cdn.jsdelivr.net/npm/@tectonic-typesetting/wasm@0.1.2/+esm";
 
-      if (template.includes('\\providecommand') || template.includes('\\newcommand')) {
-        alert("⚠️ Warning: Custom commands like \\providecommand (or \\newcommand) are not supported in the preview. Your PDF may still compile correctly.");
-      }
-
-      const finalTex = template.replace("%INSERT_BODY%", body);
-    
-      // Try rendering with latex.js
-      try {
-        const generator = new latexjs.HtmlGenerator({ hyphenate: false });
-        latexjs.parse(finalTex, { generator });
-        const preview = document.getElementById("latexjsPreview");
-        preview.innerHTML = "";
-        preview.appendChild(generator.domFragment());
-      } catch (err) {
-        document.getElementById("latexjsPreview").innerHTML = `<pre style="color:red;">${err}</pre>`;
-      }
+    window.TectonicInit = async function compileToPDF(latexCode) {
+      await init();
+      const texEngine = await Tectonic.default();
+      const pdfData = await texEngine.compile(latexCode, "main.tex");
+      const blob = new Blob([pdfData], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
     };
+
+    async function compileWithTectonic() {
+      const latexTemplate = document.getElementById("latexTemplateInput").value;
+      const latexBody = document.getElementById("bodyLatexInput").value;
+      const fullTex = latexTemplate.replace('%INSERT_BODY%', latexBody);
+    
+      try {
+        await window.TectonicInit(fullTex);
+      } catch (err) {
+        alert("❌ Tectonic compile error: " + err.message);
+        console.error(err);
+      }
+    }
 
     const pandoc = new Pandoc();
     output.textContent = "Initializing pandoc-wasm...";
