@@ -9,6 +9,30 @@
     pre { background: #f4f4f4; padding: 10px; white-space: pre-wrap; border-radius: 5px; }
     button { padding: 6px 12px; margin-right: 10px; }
     ul#imageLinks li { margin-bottom: 5px; }
+    #modeSelector {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .tabBtn {
+      padding: 10px 20px;
+      border: none;
+      background-color: #eee;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    
+    .tabBtn:hover {
+      background-color: #ddd;
+    }
+    
+    .tabBtn.active {
+      background-color: #007bff;
+      color: white;
+    }
+
   </style>
   
   <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
@@ -19,7 +43,12 @@
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 </head>
 <body>
-  <button id="toggleModeBtn">🔁 Switch to LaTeX → Markdown</button>
+  <div id="modeSelector" style="margin-bottom: 15px;">
+    <button class="tabBtn active" onclick="showPanel('mdToLatex', this)">📝 Markdown → LaTeX</button>
+    <button class="tabBtn" onclick="showPanel('latexToMd', this)">🔁 LaTeX → Markdown</button>
+    <button class="tabBtn" onclick="showPanel('livePreview', this)">👁️ Live Preview</button>
+  </div>
+
 
   <!-- Markdown → LaTeX Mode -->
   <div id="markdownToLatexSection">
@@ -168,11 +197,15 @@
     <button id="convertToMarkdownBtn">Convert to Markdown</button>
     <pre id="markdownOutput">Waiting for LaTeX input...</pre>
     
-    <h2>📝 Live Markdown + LaTeX Preview</h2>
+  </div>
+
+  <!-- Live Preview Panel -->
+  <div id="livePreviewSection" style="display:none;">
+    <h2>👁️ Live Markdown + LaTeX Preview</h2>
     <textarea id="liveInput" placeholder="Write Markdown with $math$ here..."># Example\n\nEuler's identity: $e^{i\pi} + 1 = 0$</textarea>
     <div id="livePreview" style="border: 1px solid #ccc; padding: 15px; margin-top: 10px;"></div>
-
   </div>
+
 
 
   <h3>📸 Manual Image Download Links</h3>
@@ -190,25 +223,25 @@
     const downloadTexBtn = document.getElementById("downloadTexBtn");
     const downloadZipBtn = document.getElementById("downloadZipBtn");
 
-    const toggleBtn = document.getElementById("toggleModeBtn");
-    const mdToTexSection = document.getElementById("markdownToLatexSection");
-    const texToMdSection = document.getElementById("latexToMarkdownSection");
+    function showPanel(panelId, clickedBtn) {
+      // Hide all panels
+      document.getElementById("markdownToLatexSection").style.display = "none";
+      document.getElementById("latexToMarkdownSection").style.display = "none";
+      document.getElementById("livePreviewSection").style.display = "none";
     
-    let mode = "mdToLatex";
+      // Show selected panel
+      const panelMap = {
+        mdToLatex: "markdownToLatexSection",
+        latexToMd: "latexToMarkdownSection",
+        livePreview: "livePreviewSection"
+      };
+      document.getElementById(panelMap[panelId]).style.display = "block";
     
-    toggleBtn.onclick = () => {
-      if (mode === "mdToLatex") {
-        mdToTexSection.style.display = "none";
-        texToMdSection.style.display = "block";
-        toggleBtn.textContent = "🔁 Switch to Markdown → LaTeX";
-        mode = "latexToMd";
-      } else {
-        texToMdSection.style.display = "none";
-        mdToTexSection.style.display = "block";
-        toggleBtn.textContent = "🔁 Switch to LaTeX → Markdown";
-        mode = "mdToLatex";
-      }
-    };
+      // Update active tab button
+      const allTabs = document.querySelectorAll(".tabBtn");
+      allTabs.forEach(btn => btn.classList.remove("active"));
+      clickedBtn.classList.add("active");
+    }
 
     const liveInput = document.getElementById("liveInput");
     const livePreview = document.getElementById("livePreview");
