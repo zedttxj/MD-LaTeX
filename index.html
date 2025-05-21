@@ -41,6 +41,27 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    function showPanel(panelId, clickedBtn) {
+      // Hide all panels
+      document.getElementById("markdownToLatexSection").style.display = "none";
+      document.getElementById("latexToMarkdownSection").style.display = "none";
+      document.getElementById("livePreviewSection").style.display = "none";
+    
+      // Show selected panel
+      const panelMap = {
+        mdToLatex: "markdownToLatexSection",
+        latexToMd: "latexToMarkdownSection",
+        livePreview: "livePreviewSection"
+      };
+      document.getElementById(panelMap[panelId]).style.display = "block";
+    
+      // Update active tab button
+      const allTabs = document.querySelectorAll(".tabBtn");
+      allTabs.forEach(btn => btn.classList.remove("active"));
+      clickedBtn.classList.add("active");
+    }
+  </script>
 </head>
 <body>
   <div id="modeSelector" style="margin-bottom: 15px;">
@@ -222,27 +243,6 @@
     const imageLinksList = document.getElementById("imageLinks");
     const downloadTexBtn = document.getElementById("downloadTexBtn");
     const downloadZipBtn = document.getElementById("downloadZipBtn");
-
-    function showPanel(panelId, clickedBtn) {
-      // Hide all panels
-      document.getElementById("markdownToLatexSection").style.display = "none";
-      document.getElementById("latexToMarkdownSection").style.display = "none";
-      document.getElementById("livePreviewSection").style.display = "none";
-    
-      // Show selected panel
-      const panelMap = {
-        mdToLatex: "markdownToLatexSection",
-        latexToMd: "latexToMarkdownSection",
-        livePreview: "livePreviewSection"
-      };
-      document.getElementById(panelMap[panelId]).style.display = "block";
-    
-      // Update active tab button
-      const allTabs = document.querySelectorAll(".tabBtn");
-      allTabs.forEach(btn => btn.classList.remove("active"));
-      clickedBtn.classList.add("active");
-    }
-
     const liveInput = document.getElementById("liveInput");
     const livePreview = document.getElementById("livePreview");
     
