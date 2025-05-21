@@ -61,6 +61,30 @@
       allTabs.forEach(btn => btn.classList.remove("active"));
       clickedBtn.classList.add("active");
     }
+    
+    import init, { Tectonic } from "https://cdn.jsdelivr.net/npm/@tectonic-typesetting/wasm@0.1.2/+esm";
+
+    window.TectonicInit = async function compileToPDF(latexCode) {
+      await init();
+      const texEngine = await Tectonic.default();
+      const pdfData = await texEngine.compile(latexCode, "main.tex");
+      const blob = new Blob([pdfData], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+    };
+
+    async function compileWithTectonic() {
+      const latexTemplate = document.getElementById("latexTemplateInput").value;
+      const latexBody = document.getElementById("bodyLatexInput").value;
+      const fullTex = latexTemplate.replace('%INSERT_BODY%', latexBody);
+    
+      try {
+        await window.TectonicInit(fullTex);
+      } catch (err) {
+        alert("❌ Tectonic compile error: " + err.message);
+        console.error(err);
+      }
+    }
   </script>
 </head>
 <body>
@@ -289,30 +313,6 @@
     
     // Initial render
     updatePreview();
-
-    import init, { Tectonic } from "https://cdn.jsdelivr.net/npm/@tectonic-typesetting/wasm@0.1.2/+esm";
-
-    window.TectonicInit = async function compileToPDF(latexCode) {
-      await init();
-      const texEngine = await Tectonic.default();
-      const pdfData = await texEngine.compile(latexCode, "main.tex");
-      const blob = new Blob([pdfData], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      window.open(url, "_blank");
-    };
-
-    async function compileWithTectonic() {
-      const latexTemplate = document.getElementById("latexTemplateInput").value;
-      const latexBody = document.getElementById("bodyLatexInput").value;
-      const fullTex = latexTemplate.replace('%INSERT_BODY%', latexBody);
-    
-      try {
-        await window.TectonicInit(fullTex);
-      } catch (err) {
-        alert("❌ Tectonic compile error: " + err.message);
-        console.error(err);
-      }
-    }
 
     const pandoc = new Pandoc();
     output.textContent = "Initializing pandoc-wasm...";
