@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script src="https://togetherjs.com/togetherjs-min.js"></script>
   <script>
     function showPanel(panelId, clickedBtn) {
       // Hide all panels
@@ -68,6 +69,7 @@
     <button class="tabBtn active" onclick="showPanel('mdToLatex', this)">📝 Markdown → LaTeX</button>
     <button class="tabBtn" onclick="showPanel('latexToMd', this)">🔁 LaTeX → Markdown</button>
     <button class="tabBtn" onclick="showPanel('livePreview', this)">👁️ Live Preview</button>
+    <button onclick="TogetherJS(this); return false;">Start Collaboration</button>
   </div>
 
 
