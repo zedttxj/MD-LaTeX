@@ -303,9 +303,6 @@
     
       const finalTex = template.replace("%INSERT_BODY%", body);
     
-      // Optional: show raw final output
-      output.textContent = finalTex;
-    
       // Try rendering with latex.js
       try {
         const generator = new latexjs.HtmlGenerator({ hyphenate: false });
