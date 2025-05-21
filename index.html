@@ -33,6 +33,24 @@
       color: white;
     }
 
+    .nottabBtn {
+      padding: 10px 20px;
+      border: none;
+      background-color: #eee;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    
+    .nottabBtn:hover {
+      background-color: #ddd;
+    }
+    
+    .nottabBtn.active {
+      background-color: #007bff;
+      color: white;
+    }
+
   </style>
   
   <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
@@ -69,7 +87,7 @@
     <button class="tabBtn active" onclick="showPanel('mdToLatex', this)">📝 Markdown → LaTeX</button>
     <button class="tabBtn" onclick="showPanel('latexToMd', this)">🔁 LaTeX → Markdown</button>
     <button class="tabBtn" onclick="showPanel('livePreview', this)">👁️ Live Preview</button>
-    <button onclick="TogetherJS(this); return false;">Start Collaboration</button>
+    <button class="nottabBtn" onclick="TogetherJS(this); return false;">Start Collaboration</button>
   </div>
 
 
