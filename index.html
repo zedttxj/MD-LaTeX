@@ -149,6 +149,12 @@
   <pre id="latexOutput">Waiting...</pre>
   <div id="status_image"></div>
 
+  <h2>↩️ Paste LaTeX → Convert to Markdown</h2>
+  <textarea id="latexInput" placeholder="Paste LaTeX code here..."></textarea>
+  <button id="convertToMarkdownBtn">Convert to Markdown</button>
+  <pre id="markdownOutput">Waiting for LaTeX input...</pre>
+
+
   <h3>📸 Manual Image Download Links</h3>
   <ul id="imageLinks"></ul>
 
@@ -168,6 +174,31 @@
     output.textContent = "Initializing pandoc-wasm...";
     await pandoc.init();
     output.textContent = "Ready.";
+
+    const latexInput = document.getElementById("latexInput");
+    const markdownOutput = document.getElementById("markdownOutput");
+    
+    document.getElementById("convertToMarkdownBtn").onclick = async () => {
+      const latex = latexInput.value.trim();
+      if (!latex) {
+        markdownOutput.textContent = "❌ No LaTeX input provided.";
+        return;
+      }
+    
+      markdownOutput.textContent = "🔄 Converting to Markdown...";
+    
+      try {
+        const md = await pandoc.run({
+          text: latex,
+          options: { from: "latex", to: "markdown" }
+        });
+        markdownOutput.textContent = md;
+      } catch (err) {
+        markdownOutput.textContent = "❌ Error: " + err.message;
+        console.error(err);
+      }
+    };
+
 
     function extractImageLinks(markdown) {
       const regex = /!\[.*?\]\((.*?)\)/g;
