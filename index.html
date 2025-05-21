@@ -210,6 +210,32 @@
       }
     };
 
+    const liveInput = document.getElementById("liveInput");
+    const livePreview = document.getElementById("livePreview");
+    
+    const md = window.markdownit();
+    
+    function updatePreview() {
+      const raw = liveInput.value;
+      const renderedHTML = md.render(raw);
+      livePreview.innerHTML = renderedHTML;
+    
+      // Render math inside preview
+      renderMathInElement(livePreview, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false }
+        ]
+      });
+    }
+    
+    // Update as you type
+    liveInput.addEventListener("input", updatePreview);
+    
+    // Initial render
+    updatePreview();
+
+
     const pandoc = new Pandoc();
     output.textContent = "Initializing pandoc-wasm...";
     await pandoc.init();
