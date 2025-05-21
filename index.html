@@ -300,7 +300,11 @@
         alert("❌ Your template must include the placeholder %INSERT_BODY%");
         return;
       }
-    
+
+      if (template.includes('\\providecommand') || template.includes('\\newcommand')) {
+        alert("⚠️ Warning: Custom commands like \\providecommand (or \\newcommand) are not supported in the preview. Your PDF may still compile correctly.");
+      }
+
       const finalTex = template.replace("%INSERT_BODY%", body);
     
       // Try rendering with latex.js
