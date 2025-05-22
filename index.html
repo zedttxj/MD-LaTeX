@@ -311,6 +311,8 @@
     const liveInput = document.getElementById("liveInput");
     const livePreview = document.getElementById("livePreview");
     
+    const md = window.markdownit();
+    
     function updatePreview() {
       const raw = liveInput.value;
       const renderedHTML = DOMPurify.sanitize(CmarkGFM.convert(raw));
