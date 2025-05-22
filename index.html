@@ -64,39 +64,46 @@
   </script>
   <script src="https://togetherjs.com/togetherjs-min.js"></script>
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const syncIds = ["mdInput", "tropicalEditor", "liveInput", "latexInput"];
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const syncIds = ["mdInput", "tropicalEditor", "liveInput", "latexInput"];
+      const session = TogetherJS.require("session");
   
-    syncIds.forEach(id => {
-      const el = document.getElementById(id);
+      syncIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
   
-      // Send text changes to other peers
-      el.addEventListener("input", () => {
-        if (TogetherJS.running) {
-          TogetherJS.send({
-            type: "sync-textarea",
-            id: id,
-            value: el.value
-          });
+        // Send text changes to other peers
+        el.addEventListener("input", () => {
+          if (TogetherJS.running) {
+            TogetherJS.send({
+              type: "sync-textarea",
+              id: id,
+              value: el.value,
+              clientId: session.clientId  // Include sender ID
+            });
+          }
+        });
+      });
+  
+      // Receive text updates
+      TogetherJS.hub.on("sync-textarea", msg => {
+        if (!msg.sameUrl || msg.clientId === session.clientId) return;
+        const el = document.getElementById(msg.id);
+        if (el && el.value !== msg.value) {
+          el.value = msg.value;
+  
+          // Trigger any local updates (like preview sync)
+          el.dispatchEvent(new Event("input", { bubbles: true }));
         }
       });
-    });
   
-    // Receive text updates
-    TogetherJS.hub.on("sync-textarea", msg => {
-      if (!msg.sameUrl) return;
-      const el = document.getElementById(msg.id);
-      if (el && el.value !== msg.value) {
-        el.value = msg.value;
-  
-        // Trigger any listeners (like input for live preview)
-        el.dispatchEvent(new Event("input"));
-      }
+      // Log when a new user joins
+      TogetherJS.hub.on("hello", function (msg) {
+        console.log("👥 A user joined:", msg.name);
+      });
     });
-  });
-  TogetherJS.hub.on("hello", function (msg) {
-    console.log("👥 A user joined:", msg.name);
-  });
+  </script>
 
   </script>
 
