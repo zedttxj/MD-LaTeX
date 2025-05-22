@@ -2,7 +2,7 @@
 
 This project makes use of the following open source libraries and tools:
 
-- **[markdown-it](https://github.com/markdown-it/markdown-it)** – Converts Markdown to HTML in-browser.
+- **[cmark-gfm-js](https://github.com/mgenware/cmark-gfm-js)** – Converts Markdown to HTML in-browser.
 - **[KaTeX](https://katex.org/)** – Renders LaTeX math formulas in the live preview.
 - **[TogetherJS](https://togetherjs.com/)** – Enables real-time collaboration and shared editing sessions.
 - **[JSZip](https://stuk.github.io/jszip/)** – Creates downloadable `.zip` files containing `.tex` and image assets.
