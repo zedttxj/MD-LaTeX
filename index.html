@@ -94,8 +94,11 @@
       }
     });
   });
-  </script>
+  TogetherJS.hub.on("hello", function (msg) {
+    console.log("👥 A user joined:", msg.name);
+  });
 
+  </script>
 
   <script>
     function showPanel(panelId, clickedBtn) {
