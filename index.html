@@ -62,6 +62,7 @@
   <script>
     window.TogetherJSConfig_hubBase = "https://togetherjs-hub-ixsz.onrender.com/";
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.2/dist/purify.min.js"></script>
   <script src="https://togetherjs.com/togetherjs-min.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -314,7 +315,7 @@
     
     function updatePreview() {
       const raw = liveInput.value;
-      const renderedHTML = md.render(raw);
+      const renderedHTML = DOMPurify.sanitize(md.render(raw));
       livePreview.innerHTML = renderedHTML;
     
       // Render math inside preview
